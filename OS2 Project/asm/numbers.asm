@@ -17,7 +17,7 @@ reverse_number_asm:
     imul eax, eax, 10       ; reversed = reversed * 10
     add eax, edx            ; reversed += digit
     
-    mov ebx, [esp + 4]      ; reload original number
+    mov ebx, edi       ; reload original number
     test ebx, ebx
     jnz .loop
     
