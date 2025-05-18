@@ -1,0 +1,28 @@
+CC = gcc
+ASM = nasm
+CFLAGS = -Wall -Wextra -Og -g
+ASMFLAGS = -f elf64 -g -F dwarf
+
+TARGETS = main benchmark test_numbers test_strings test_arrays
+
+all: $(TARGETS)
+
+main: c/main.o asm/numbers.o asm/strings.o asm/arrays.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+benchmark: c/benchmarks.o asm/numbers.o asm/strings.o asm/arrays.o
+	$(CC) $(CFLAGS) -o $@ $^ -lrt
+
+test_%: tests/test_%.o asm/numbers.o asm/strings.o asm/arrays.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+asm/%.o: asm/%.asm
+	$(ASM) $(ASMFLAGS) -o $@ $<
+
+clean:
+	rm -f $(TARGETS) *.o asm/*.o
+
+.PHONY: all clean
